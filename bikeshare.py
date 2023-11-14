@@ -6,6 +6,8 @@ CITY_DATA = {'chicago': 'chicago.csv',
              'new york city': 'new_york_city.csv',
              'washington': 'washington.csv'}
 
+# create a function to ask users to input choices
+
 
 def get_filters():
     print('Hello! Let\'s explore some US bikeshare data!')
@@ -136,7 +138,8 @@ def display_raw_data(df):
             break
         elif raw == 'yes':
             print(df[i:i+5])
-            raw = input("Would you like to see 5 more rows of the data? Enter yes or no. ").lower()
+            raw = input(
+                "Would you like to see 5 more rows of the data? Enter yes or no. ").lower()
             i += 5
         else:
             raw = input(
