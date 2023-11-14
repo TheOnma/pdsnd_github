@@ -162,8 +162,9 @@ def main():
 
             display_raw_data(bikeshare_data)
 
-            restart = input('\nWould you like to restart? Enter yes or no.\n')
-            if restart.lower() != 'yes':
+            restart_prompt = input(
+                '\nWould you like to restart? Enter yes or no.\n')
+            if restart_prompt.lower() != 'yes':
                 break
 
 
