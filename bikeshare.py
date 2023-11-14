@@ -41,64 +41,68 @@ def get_filters():
 
 def load_data(city, month, day):
     try:
-        df = pd.read_csv(CITY_DATA[city.lower()])
+        bikeshare_data = pd.read_csv(CITY_DATA[city.lower()])
     except FileNotFoundError:
         print("The data file for the selected city was not found.")
         return None
 
-    df['Start Time'] = pd.to_datetime(df['Start Time'])
-    df['End Time'] = pd.to_datetime(df['End Time'])
+    bikeshare_data['Start Time'] = pd.to_datetime(bikeshare_data['Start Time'])
+    bikeshare_data['End Time'] = pd.to_datetime(bikeshare_data['End Time'])
 
-    df['Hour'] = df['Start Time'].dt.hour
-    df['Month'] = df['Start Time'].dt.month
-    df['Day of week'] = df['Start Time'].dt.weekday_name
+    bikeshare_data['Hour'] = bikeshare_data['Start Time'].dt.hour
+    bikeshare_data['Month'] = bikeshare_data['Start Time'].dt.month
+    bikeshare_data['Day of week'] = bikeshare_data['Start Time'].dt.weekday_name
 
     if month != 'all':
         months_of_year = ['january', 'february',
                           'march', 'april', 'may', 'june']
         index_of_month = months_of_year.index(month) + 1
-        df = df[df['Month'] == index_of_month]
+        bikeshare_data = bikeshare_data[bikeshare_data['Month']
+                                        == index_of_month]
 
     if day != 'all':
-        df = df[df['Day of week'] == day.title()]
+        bikeshare_data = bikeshare_data[bikeshare_data['Day of week'] == day.title(
+        )]
 
-    return df
+    return bikeshare_data
 
 
-def time_stats(df):
+def time_stats(bikeshare_data):
     print('\nCalculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
 
-    print('Most common month: ', df['Month'].value_counts().index[0])
+    print('Most common month: ',
+          bikeshare_data['Month'].value_counts().index[0])
     print('Most common day of week: ',
-          df['Day of week'].value_counts().index[0])
-    print('Most common start hour: ', df['Hour'].value_counts().index[0])
+          bikeshare_data['Day of week'].value_counts().index[0])
+    print('Most common start hour: ',
+          bikeshare_data['Hour'].value_counts().index[0])
 
     print("\nThis took {} seconds.".format(round(time.time() - start_time, 1)))
     print('-'*40)
 
 
-def station_stats(df):
+def station_stats(bikeshare_data):
     print('\nCalculating The Most Popular Stations and Trip...\n')
     start_time = time.time()
 
     print('Most common start station: ',
-          df['Start Station'].value_counts().index[0])
+          bikeshare_data['Start Station'].value_counts().index[0])
     print('Most common end station: ',
-          df['End Station'].value_counts().index[0])
-    print(pd.DataFrame(df.groupby(['Start Station', 'End Station']).size(
+          bikeshare_data['End Station'].value_counts().index[0])
+    print(pd.DataFrame(bikeshare_data.groupby(['Start Station', 'End Station']).size(
     ).sort_values(ascending=False)).iloc[0])
 
     print("\nThis took {} seconds.".format(round(time.time() - start_time, 1)))
     print('-'*40)
 
 
-def trip_duration_stats(df):
+def trip_duration_stats(bikeshare_data):
     print('\nCalculating Trip Duration...\n')
     start_time = time.time()
 
-    total_travel_time = df['Trip Duration'].sum()
-    mean_travel_time = df['Trip Duration'].mean()
+    total_travel_time = bikeshare_data['Trip Duration'].sum()
+    mean_travel_time = bikeshare_data['Trip Duration'].mean()
 
     print('Total travel time: {} seconds'.format(round(total_travel_time, 1)))
     print('Mean travel time: {} seconds'.format(round(mean_travel_time, 1)))
@@ -107,26 +111,26 @@ def trip_duration_stats(df):
     print('-'*40)
 
 
-def user_stats(df, city):
+def user_stats(bikeshare_data, city):
     print('\nCalculating User Stats...\n')
     start_time = time.time()
 
-    print('Counts of user types: ', df['User Type'].value_counts())
+    print('Counts of user types: ', bikeshare_data['User Type'].value_counts())
 
     if city.lower() in ['chicago', 'new york city']:
-        print('Counts of gender: ', df['Gender'].value_counts())
+        print('Counts of gender: ', bikeshare_data['Gender'].value_counts())
         print('Most earliest year of birth: ',
-              int(df['Birth Year'].min()))
+              int(bikeshare_data['Birth Year'].min()))
         print('Most recent year of birth: ',
-              int(df['Birth Year'].max()))
+              int(bikeshare_data['Birth Year'].max()))
         print('Most common year of birth: ',
-              int(df['Birth Year'].mode()[0]))
+              int(bikeshare_data['Birth Year'].mode()[0]))
 
     print("\nThis took {} seconds.".format(round(time.time() - start_time, 1)))
     print('-'*40)
 
 
-def display_raw_data(df):
+def display_raw_data(bikeshare_data):
     i = 0
     raw = input("Would you like to see the raw data? Enter yes or no. ").lower()
     pd.set_option('display.max_columns', 200)
@@ -135,8 +139,9 @@ def display_raw_data(df):
         if raw == 'no':
             break
         elif raw == 'yes':
-            print(df[i:i+5])
-            raw = input("Would you like to see 5 more rows of the data? Enter yes or no. ").lower()
+            print(bikeshare_data[i:i+5])
+            raw = input(
+                "Would you like to see 5 more rows of the data? Enter yes or no. ").lower()
             i += 5
         else:
             raw = input(
@@ -147,14 +152,14 @@ def main():
     while True:
         city, month, day = get_filters()
         if city and load_data(city, month, day) is not None:
-            df = load_data(city, month, day)
+            bikeshare_data = load_data(city, month, day)
 
-            time_stats(df)
-            station_stats(df)
-            trip_duration_stats(df)
-            user_stats(df, city)
+            time_stats(bikeshare_data)
+            station_stats(bikeshare_data)
+            trip_duration_stats(bikeshare_data)
+            user_stats(bikeshare_data, city)
 
-            display_raw_data(df)
+            display_raw_data(bikeshare_data)
 
             restart = input('\nWould you like to restart? Enter yes or no.\n')
             if restart.lower() != 'yes':
