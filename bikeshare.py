@@ -132,19 +132,20 @@ def user_stats(bikeshare_data, city):
 
 def display_raw_data(bikeshare_data):
     i = 0
-    raw = input("Would you like to see the raw data? Enter yes or no. ").lower()
+    view_raw_data = input(
+        "Would you like to see the raw data? Enter yes or no. ").lower()
     pd.set_option('display.max_columns', 200)
 
     while True:
-        if raw == 'no':
+        if view_raw_data == 'no':
             break
-        elif raw == 'yes':
+        elif view_raw_data == 'yes':
             print(bikeshare_data[i:i+5])
-            raw = input(
+            view_raw_data = input(
                 "Would you like to see 5 more rows of the data? Enter yes or no. ").lower()
             i += 5
         else:
-            raw = input(
+            view_raw_data = input(
                 "\nYour input is invalid. Please enter only 'yes' or 'no'\n").lower()
 
 
